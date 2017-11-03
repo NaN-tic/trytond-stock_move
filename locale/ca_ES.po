@@ -1,0 +1,11 @@
+#
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "model:ir.action,name:wizard_product_moves"
+msgid "Product Moves"
+msgstr "Moviments del producte"
+
+msgctxt "model:ir.action,name:wizard_template_moves"
+msgid "Product Moves"
+msgstr "Moviments del producte"
