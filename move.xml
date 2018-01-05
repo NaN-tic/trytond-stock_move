@@ -2,13 +2,6 @@
 <!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
 this repository contains the full copyright notices and license terms. -->
 <tryton>
-    <data>
-        <record model="ir.ui.view" id="move_view_tree">
-            <field name="model">stock.move</field>
-            <field name="inherit" ref="stock.move_view_tree"/>
-            <field name="name">move_tree</field>
-        </record>
-    </data>
     <data depends="purchase">
         <record model="ir.ui.view" id="purchase_move_view_tree">
             <field name="model">stock.move</field>
