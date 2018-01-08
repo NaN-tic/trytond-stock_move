@@ -1,6 +1,7 @@
 # This file is part of Tryton.  The COPYRIGHT file at the top level of
 # this repository contains the full copyright notices and license terms.
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from trytond.wizard import Wizard, StateAction
 from trytond.pyson import PYSONEncoder
 from trytond.transaction import Transaction
@@ -36,7 +37,8 @@ class ProductMoves(Wizard):
             for product in Product.search([('id', 'in', prod_ids)]):
                 codes.add(product.code or product.name)
 
-        now = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        now = (datetime.now().replace(
+            hour=0, minute=0, second=0, microsecond=0) - relativedelta(years=1))
         search_value = self.search_value_moves()
 
         domain = [('product', '=', code) for code in codes]
