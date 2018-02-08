@@ -17,7 +17,8 @@ class ProductMoves(Wizard):
     start = StateAction('stock.act_move_form')
 
     def search_value_moves(self):
-        now = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        now = datetime.now().replace(
+            hour=0, minute=0, second=0, microsecond=0)-relativedelta(years=1)
         return [('create_date', '>=', now)]
 
     def do_start(self, action):
@@ -28,26 +29,20 @@ class ProductMoves(Wizard):
         context = Transaction().context
         prod_ids = context['active_ids']
 
+        ids = set()
         codes = set()
         if context['active_model'] == 'product.template':
             for template in Template.search([('id', 'in', prod_ids)]):
                 for product in template.products:
+                    ids.add(str(product.id))
                     codes.add(product.code or product.name)
         else:
             for product in Product.search([('id', 'in', prod_ids)]):
+                ids.add(str(product.id))
                 codes.add(product.code or product.name)
 
-        now = (datetime.now().replace(
-            hour=0, minute=0, second=0, microsecond=0) - relativedelta(years=1))
         search_value = self.search_value_moves()
-
-        domain = [('product', '=', code) for code in codes]
-        if len(codes) > 1:
-            domain.insert(0, 'OR')
-            search_value += [domain]
-        else:
-            search_value += domain
-
+        search_value += [('product', 'in', list(ids))]
         action['pyson_search_value'] = PYSONEncoder().encode(search_value)
 
         # rename title tab
