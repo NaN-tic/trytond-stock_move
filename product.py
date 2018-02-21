@@ -29,20 +29,24 @@ class ProductMoves(Wizard):
         context = Transaction().context
         prod_ids = context['active_ids']
 
-        ids = set()
         codes = set()
         if context['active_model'] == 'product.template':
             for template in Template.search([('id', 'in', prod_ids)]):
                 for product in template.products:
-                    ids.add(str(product.id))
                     codes.add(product.code or product.name)
         else:
             for product in Product.search([('id', 'in', prod_ids)]):
-                ids.add(str(product.id))
                 codes.add(product.code or product.name)
 
         search_value = self.search_value_moves()
-        search_value += [('product', 'in', list(ids))]
+
+        domain = [('product', '=', code) for code in codes]
+        if len(codes) > 1:
+            domain.insert(0, 'OR')
+            search_value += [domain]
+        else:
+            search_value += domain
+
         action['pyson_search_value'] = PYSONEncoder().encode(search_value)
 
         # rename title tab
